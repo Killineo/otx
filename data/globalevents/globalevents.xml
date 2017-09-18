@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <globalevents>
-	<!-- Server Events -->
-	<globalevent name="save" interval="900000" event="script" value="save.lua"/>
-	<globalevent name="clean" interval="7200000" event="script" value="clean.lua"/>
-	<globalevent name="init" type="startup" event="script" value="init.lua"/>
-	<globalevent name="globalsave" type="globalsave" event="script" value="init.lua"/>
-	<globalevent name="record" type="record" event="script" value="record.lua"/>
+	<globalevent type="startup" name="ServerStartup" script="startup.lua" />
+	<globalevent type="record" name="PlayerRecord" script="record.lua" />
 
-	<!-- Examples -->
-	<!-- <globalevent name="timer_example" time="21:35:11" event="script" value="my_script.lua"/> -->
+	<!-- OTX Systems -->
+		<!-- Modified Scripts from TFS
+			serversave.lua - for save with interval time
+		-->
+
+		<!-- Save 15 minutes / Clean 2 hours -->
+		<globalevent name="Server Save" interval="900000" script="serversave.lua" />
+		<globalevent name="Clean Map" interval="7200000" script="cleanmap.lua" />
 </globalevents>
