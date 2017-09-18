@@ -1,77 +1,61 @@
--- Ordered as in creaturescripts.xml
-local events = {
-	'PlayerDeath',
-	'DropLoot',
-	'BossParticipation',
+local config = {
+	loginMessage = getConfigValue('loginMessage'),
+	useFragHandler = getBooleanFromString(getConfigValue('useFragHandler'))
 }
 
-local function onMovementRemoveProtection(cid, oldPosition, time)
-	local player = Player(cid)
-	if not player then
-		return true
+function onLogin(cid)
+	if(getBooleanFromString(getConfigValue('accountManager')) == false) then
+		if (getCreatureName(cid) == "Account Manager") then
+			return doRemoveCreature(cid, true)
+		end
 	end
 
-	local playerPosition = player:getPosition()
-	if (playerPosition.x ~= oldPosition.x or playerPosition.y ~= oldPosition.y or playerPosition.z ~= oldPosition.z) or player:getTarget() then
-		player:setStorageValue(Storage.combatProtectionStorage, 0)
-		return true
+	local loss = getConfigValue('deathLostPercent')
+	if(loss ~= nil and getPlayerStorageValue(cid, "bless") ~= 5) then
+		doPlayerSetLossPercent(cid, PLAYERLOSS_EXPERIENCE, loss * 10)
 	end
 
-	addEvent(onMovementRemoveProtection, 1000, cid, oldPosition, time - 1)
-end
+	if(getPlayerStorageValue(cid, "death_bless") == 1) then
+		local t = {PLAYERLOSS_EXPERIENCE, PLAYERLOSS_SKILLS, PLAYERLOSS_ITEMS, PLAYERLOSS_CONTAINERS}
+		for i = 1, #t do
+			doPlayerSetLossPercent(cid, t[i], 100)
+		end
+		setPlayerStorageValue(cid, "death_bless", 0)
+	end
 
-function onLogin(player)
-	local loginStr = "Welcome to " .. configManager.getString(configKeys.SERVER_NAME) .. "!"
-	if player:getLastLoginSaved() <= 0 then
-		loginStr = loginStr .. " Please choose your outfit."
-		player:sendOutfitWindow()
+	local accountManager = getPlayerAccountManager(cid)
+	if(accountManager == MANAGER_NONE) then
+		local lastLogin, str = getPlayerLastLoginSaved(cid), config.loginMessage
+		if(lastLogin > 0) then
+			doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT, str)
+			str = "Your last visit was on " .. os.date("%a %b %d %X %Y", lastLogin) .. "."
+		else
+			str = str .. " Please choose your outfit."
+			doPlayerSendOutfitWindow(cid)
+		end
+
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT, str)
+	elseif(accountManager == MANAGER_NAMELOCK) then
+		addEvent(valid(doCreatureSay), 500, cid, "Hello, it appears that your character has been locked for name violating rules, what new name would you like to have?", TALKTYPE_PRIVATE_NP, true, cid)
+	elseif(accountManager == MANAGER_ACCOUNT) then
+		addEvent(valid(doCreatureSay), 500, cid, "Hello, type 'account' to manage your account. If you would like to start over, type 'cancel' anywhere.", TALKTYPE_PRIVATE, true, cid)
 	else
-		if loginStr ~= "" then
-			player:sendTextMessage(MESSAGE_STATUS_DEFAULT, loginStr)
-		end
-
-		loginStr = string.format("Your last visit was on %s.", os.date("%a %b %d %X %Y", player:getLastLoginSaved()))
-	end
-	player:sendTextMessage(MESSAGE_STATUS_DEFAULT, loginStr)
-
-	local playerId = player:getId()
-
-	-- Promotion
-	local vocation = player:getVocation()
-	local promotion = vocation:getPromotion()
-	if player:isPremium() then
-		local value = player:getStorageValue(STORAGEVALUE_PROMOTION)
-		if not promotion and value ~= 1 then
-			player:setStorageValue(STORAGEVALUE_PROMOTION, 1)
-		elseif value == 1 then
-			player:setVocation(promotion)
-		end
-	elseif not promotion then
-		player:setVocation(vocation:getDemotion())
+		addEvent(valid(doCreatureSay), 500, cid, "Hello, type 'account' to create an account or 'recover' to recover an account.", TALKTYPE_PRIVATE, true, cid)
 	end
 
-	-- Rewards notice
-	local rewards = #player:getRewardList()
-	if rewards > 0 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have %s %s in your reward chest.", rewards == 1 and 'one' or rewards, rewards > 1 and "rewards" or "reward"))
+	if(not isPlayerGhost(cid)) then
+		doSendMagicEffect(getCreaturePosition(cid), CONST_ME_TELEPORT)
 	end
 
-	-- Update player id 
-	local stats = player:inBossFight()
-	if stats then
-		stats.playerId = player:getId()
+	registerCreatureEvent(cid, "Idle")
+	registerCreatureEvent(cid, "Mail")
+	registerCreatureEvent(cid, "ReportBug")
+	if(config.useFragHandler) then
+		registerCreatureEvent(cid, "SkullCheck")
 	end
 
-	-- Events
-	for i = 1, #events do
-		player:registerEvent(events[i])
-	end
-
-	if player:getStorageValue(Storage.combatProtectionStorage) <= os.time() then
-		player:setStorageValue(Storage.combatProtectionStorage, os.time() + 10)
-		onMovementRemoveProtection(playerId, player:getPosition(), 10)
-	end
-	db.query('INSERT INTO `players_online` (`player_id`) VALUES (' .. playerId .. ')')
-
+	registerCreatureEvent(cid, "GuildEvents")
+	registerCreatureEvent(cid, "AdvanceSave")
+	registerCreatureEvent(cid, "CaveThings")
 	return true
 end

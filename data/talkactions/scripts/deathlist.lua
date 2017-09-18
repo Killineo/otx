@@ -1,62 +1,87 @@
-local function getArticle(str)
-	return str:find("[AaEeIiOoUuYy]") == 1 and "an" or "a"
+local config = {
+	deathAssistCount = getConfigValue('deathAssistCount') + 1,
+	maxDeathRecords = getConfigValue('maxDeathRecords'),
+	limit = ""
+}
+if(config.deathAssistCount > 0) then
+	config.limit = " LIMIT 0, " .. config.deathAssistCount
 end
 
-local function getMonthDayEnding(day)
-	if day == "01" or day == "21" or day == "31" then
-		return "st"
-	elseif day == "02" or day == "22" then
-		return "nd"
-	elseif day == "03" or day == "23" then
-		return "rd"
-	else
-		return "th"
+function onSay(cid, words, param, channel)
+	if(not checkExhausted(cid, 666, 10)) then
+		return false
 	end
-end
 
-local function getMonthString(m)
-	return os.date("%B", os.time{year = 1970, month = m, day = 1})
-end
+	local target = db.getResult("SELECT `name`, `id` FROM `players` WHERE `name` = " .. db.escapeString(param) .. ";")
+	if(target:getID() == -1) then
+		doPlayerSendCancel(cid, "A player with that name does not exist.")
+		return true
+	end
 
-function onSay(player, words, param)
-	local resultId = db.storeQuery("SELECT `id`, `name` FROM `players` WHERE `name` = " .. db.escapeString(param))
-	if resultId ~= false then
-		local targetGUID = result.getDataInt(resultId, "id")
-		local targetName = result.getDataString(resultId, "name")
-		result.free(resultId)
-		local str = ""
-		local breakline = ""
+	local targetName, targetId = target:getDataString("name"), target:getDataInt("id")
+	target:free()
 
-		local resultId = db.storeQuery("SELECT `time`, `level`, `killed_by`, `is_player` FROM `player_deaths` WHERE `player_id` = " .. targetGUID .. " ORDER BY `time` DESC")
-		if resultId ~= false then
-			repeat
-				if str ~= "" then
-					breakline = "\n"
-				end
-				local date = os.date("*t", result.getDataInt(resultId, "time"))
-
-				local article = ""
-				local killed_by = result.getDataString(resultId, "killed_by")
-				if result.getDataInt(resultId, "is_player") == 0 then
-					article = getArticle(killed_by) .. " "
-					killed_by = string.lower(killed_by)
+	local str, deaths = "", db.getResult("SELECT `id`, `date`, `level` FROM `player_deaths` WHERE `player_id` = " .. targetId .." ORDER BY `date` DESC LIMIT 0, " .. config.maxDeathRecords)
+	if(deaths:getID() ~= -1) then
+		repeat
+			local killers = db.getResult("SELECT environment_killers.name AS monster_name, players.name AS player_name FROM killers LEFT JOIN environment_killers ON killers.id = environment_killers.kill_id LEFT JOIN player_killers ON killers.id = player_killers.kill_id LEFT JOIN players ON players.id = player_killers.player_id WHERE killers.death_id = " .. deaths:getDataInt("id") .. " ORDER BY killers.final_hit DESC, killers.id ASC" .. config.limit)
+			if(killers:getID() ~= -1) then
+				if(str ~= "") then
+					str = str .. "\n" .. os.date("%d %B %Y %X ", deaths:getDataLong("date"))
+				else
+					str = os.date("%d %B %Y %X ", deaths:getDataLong("date"))
 				end
 
-				if date.day < 10 then date.day = "0" .. date.day end
-				if date.hour < 10 then date.hour = "0" .. date.hour end
-				if date.min < 10 then date.min = "0" .. date.min end
-				if date.sec < 10 then date.sec = "0" .. date.sec end
-				str = str .. breakline .. " " .. date.day .. getMonthDayEnding(date.day) .. " " .. getMonthString(date.month) .. " " .. date.year .. " " .. date.hour .. ":" .. date.min .. ":" .. date.sec .. "   Died at Level " .. result.getDataInt(resultId, "level") .. " by " .. article .. killed_by .. "."
-			until not result.next(resultId)
-			result.free(resultId)
-		end
+				local count, i = killers:getRows(false), 0
+				repeat
+					local monster = killers:getDataString("monster_name")
+					if(i == 0 or i == (count - 1)) then
+						monster = string.gsub(monster:gsub("an ", ""), "a ", "")
+					end
 
-		if str == "" then
-			str = "No deaths."
-		end
-		player:popupFYI("Deathlist for player, " .. targetName .. ".\n\n" .. str)
+					if(killers:getDataString("player_name") ~= "") then
+						if(i == 0) then
+							str = str .. "Killed at level " .. deaths:getDataInt("level") .. " by:\n  "
+						elseif(i == count) then
+							str = str .. " and by "
+						elseif(i % 4 == 0) then
+							str = str .. ",\n  "
+						else
+							str = str .. ", "
+						end
+
+						if(monster ~= "") then
+							str = str .. monster .. " summoned by "
+						end
+
+						str = str .. killers:getDataString("player_name")
+					else
+						if(i == 0) then
+							str = str .. "Died at level " .. deaths:getDataInt("level") .. " by:\n  "
+						elseif(i == count) then
+							str = str .. " and by "
+						elseif(i % 4 == 0) then
+							str = str .. ",\n  "
+						else
+							str = str .. ", "
+						end
+
+						str = str .. monster
+					end
+
+					i = i + 1
+					if(i == count) then
+						str = str .. "."
+					end
+				until not(killers:next())
+				killers:free()
+			end
+		until not(deaths:next())
+		deaths:free()
 	else
-		player:sendCancelMessage("A player with that name does not exist.")
+		str = "No deaths recorded."
 	end
-	return false
+
+	doPlayerPopupFYI(cid, "Deathlist for player: " .. targetName .. ".\n\n" .. str)
+	return true
 end

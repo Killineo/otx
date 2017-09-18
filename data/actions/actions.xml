@@ -83,28 +83,8 @@
 	<action fromid="5082" toid="5085" script="other/doors.lua" />
 	<action itemid="3743" script="other/transforms.lua" />
 	<action itemid="4404" script="other/transforms.lua" />
-
-	<!-- _Scripts OTX -->
-		<!-- Modified Scripts from TFS
-			actions.lua
-			quest.lua
-			teleport.lua
-			fluids.lua
-			potions.lua
-			doors.lua
-			"tools scripts"
-		-->
-
-		<!-- Quests -->
-		<action actionid="2000" script="_scripts_otx/system.lua" />
-
-		<!-- Offline Training
-		<action fromid="----" toid="----" script="other/skilltrainer.lua" /> -->
-
-		<!-- Dolls -->
-		<action itemid="5080" script="_scripts_otx/dolls.lua" />
-
-		<!-- Others -->
-		<action itemid="3955" script="_scripts_otx/voodoodoll.lua" />
-		<!-- <action itemid="----" script="_scripts_otx/premiumscroll.lua" /> -->
+	
+	<!-- Others -->
+	<action itemid="5080" script="other/dolls.lua" />
+	<action itemid="3955" script="other/voodoodoll.lua" />
 </actions>

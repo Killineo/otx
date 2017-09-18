@@ -1,22 +1,34 @@
-function onSay(player, words, param)
-	if player:getExhaustion(1000) <= 0 then
-		player:setExhaustion(1000, 2)
-		player:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "Player commands:" .. "\n"
-			.. "!buyhouse" .. "\n"
-			.. "!leavehouse" .. "\n"
-			.. "!cast on" .. "\n"
-			.. "!cast off" .. "\n"
-			.. "!serverinfo" .. "\n"
-			.. "!online" .. "\n"
-			.. "!deathlist" .. "\n"
-			.. "!kills" .. "\n"
-			.. "!saveme" .. "\n"
-			.. "!changesex" .. "\n"
-			.. "!uptime" .. "\n"
-			.. "!buypremium" .. "\n"
-			.. "!spells")
+local config = {
+	ingameGuilds = getBooleanFromString(getConfigValue('ingameGuildManagement'))
+}
+
+function onSay(cid, words, param, channel)
+	if(not checkExhausted(cid, 666, 10)) then
 		return false
-	else
-		player:sendTextMessage(MESSAGE_STATUS_SMALL, 'You\'re exhausted for: '..player:getExhaustion(1000)..' seconds.')
 	end
+
+	local playerAccess, t = getPlayerAccess(cid), {}
+	for i, talk in ipairs(getTalkActionList()) do
+		if(not talk.hidden and playerAccess >= talk.access) then
+			if(config.ingameGuilds or (talk.functionName ~= "guildjoin" and talk.functionName ~= "guildcreate")) then
+				table.insert(t, talk)
+			end
+		end
+	end
+
+	table.sort(t, function(a, b) return a.access > b.access end)
+	local lastAccess, str = -1, ""
+	for i, talk in ipairs(t) do
+		local line = ""
+		if(lastAccess ~= talk.access) then
+			if(i ~= 1) then
+				line = "\n"
+			end
+			lastAccess = talk.access
+		end
+		str = str .. line .. talk.words .. "\n"
+	end
+
+	doShowTextDialog(cid, ITEM_ACTION_BOOK, str)
+	return true
 end

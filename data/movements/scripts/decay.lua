@@ -1,5 +1,5 @@
-function onStepIn(creature, item, position, fromPosition)
-	item:transform(item.itemid + 1)
-	item:decay()
+function onStepIn(cid, item, position, fromPosition)
+	doTransformItem(item.uid, item.itemid + 1)
+	doDecayItem(item.uid)
 	return true
 end
