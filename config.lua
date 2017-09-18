@@ -13,18 +13,24 @@
 	displayGamemastersWithOnlineCommand = false
 
 	-- MySql
-	sqlType = "mysql"
-	sqlHost = "127.0.0.1"
-	sqlPort = 3306
-	sqlUser = "root"
-	sqlPass = "killineo123"
-	sqlDatabase = "global"
-	sqlFile = "schemas/otxserver.s3db"
-	sqlKeepAlive = 0
-	mysqlReadTimeout = 10
-	mysqlWriteTimeout = 10
-	mysqlReconnectionAttempts = 5
-	encryptionType = "sha1" --// encryptionType can be (plain, md5, sha1, sha256 or sha512).
+        -- MySql
+        sqlType = "mysql"
+mysqlHost = "127.0.0.1"
+mysqlUser = "root"
+mysqlPass = "killineo123"
+mysqlDatabase = "otx"
+mysqlPort = 3306
+mysqlSock = ""
+passwordType = "sha1"
+        sqlHost = "127.0.0.1"
+        sqlPort = 3306
+        sqlUser = "root"
+        sqlPass = "killineo123"
+        sqlDatabase = "global"
+        sqlKeepAlive = 0
+        mysqlReadTimeout = 10
+        mysqlWriteTimeout = 10
+        mysqlReconnectionAttempts = 5
 
 	-- World / Ip / Port
 	worldId = 0
