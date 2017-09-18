@@ -1,3 +1,3 @@
-function onUse(player, item, fromPosition, target, toPosition)
-	return onUseMachete(player, item, fromPosition, target, toPosition)
+function onUse(cid, item, fromPosition, itemEx, toPosition)
+	return TOOLS.MACHETE(cid, item, fromPosition, itemEx, toPosition, true)
 end
