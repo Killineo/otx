@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <creaturescripts>
-	<!-- Player Login -->
-	<event type="login" name="PlayerLogin" event="script" value="login.lua"/>
-
-	<!-- Server Events -->
-	<event type="channeljoin" name="GuildEvents" event="script" value="guild.lua"/>
-	<event type="mailreceive" name="Mail" event="script" value="mail.lua"/>
-	<event type="reportbug" name="ReportBug" script="reportbug.lua"/>
-	<event type="advance" name="AdvanceSave" event="script" value="advancesave.lua"/>
-	<event type="think" name="Idle" event="script" value="idle.lua"/>
-	<event type="think" name="SkullCheck" event="script" value="skullcheck.lua"/>
-	<event type="moveitem" name="MoveItem" event="script" value="houseprotect.lua"/>
-	<event type="moveitem" name="CaveThings" event="script" value="caveThings.lua"/>
+	<event type="login" name="PlayerLogin" script="natives/login.lua" />
+	<event type="logout" name="PlayerLogout" script="natives/logout.lua" />
+	<event type="login" name="OfflineTraining" script="natives/offlinetraining.lua" />
+	<event type="death" name="PlayerDeath" script="natives/playerdeath.lua" />
+	<event type="death" name="DropLoot" script="natives/droploot.lua" />
+	<event type="extendedopcode" name="ExtendedOpcode" script="natives/extendedopcode.lua" />
+	<event type="login" name="FirstItems" script="natives/firstitems.lua" />
+	<event type="advance" name="AdvanceSave" script="natives/advance_save.lua" />
+	<event type="death" name="BossDeath" script="natives/boss.lua" />
+	<event type="healthchange" name="BossParticipation" script="natives/boss.lua" />
+	<event type="think" name="BossThink" script="natives/boss.lua" />
 </creaturescripts>

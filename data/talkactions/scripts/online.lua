@@ -1,36 +1,23 @@
-function onSay(cid, words, param, channel)
-	if(not checkExhausted(cid, 666, 10)) then
-		return false
-	end
+local maxPlayersPerMessage = 10
 
-	local strings, i, position, added, showGamemasters = {""}, 1, 1, false, getBooleanFromString(getConfigValue('displayGamemastersWithOnlineCommand'))
-	for _, pid in ipairs(getPlayersOnline()) do
-		if(added) then
-			if(i > (position * 7)) then
-				strings[position] = strings[position] .. ","
-				position = position + 1
-				strings[position] = ""
-			else
-				strings[position] = i == 1 and "" or strings[position] .. ", "
-			end
-		end
+function onSay(player, words, param)
+	local hasAccess = player:getGroup():getAccess()
+	local players = Game.getPlayers()
+	local onlineList = {}
 
-		added = false
-		if((showGamemasters or getPlayerCustomFlagValue(cid, PLAYERCUSTOMFLAG_GAMEMASTERPRIVILEGES) or not getPlayerCustomFlagValue(pid, PLAYERCUSTOMFLAG_GAMEMASTERPRIVILEGES)) and (not isPlayerGhost(pid) or getPlayerGhostAccess(cid) >= getPlayerGhostAccess(pid))) then
-			strings[position] = strings[position] .. getCreatureName(pid) .. " [" .. getPlayerLevel(pid) .. "]"
-			i = i + 1
-			added = true
+	for _, targetPlayer in ipairs(players) do
+		if hasAccess or not targetPlayer:isInGhostMode() then
+			table.insert(onlineList, ("%s [%d]"):format(targetPlayer:getName(), targetPlayer:getLevel()))
 		end
 	end
 
-	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, (i - 1) .. " player" .. (i > 1 and "s" or "") .. " online:")
-	for i, str in ipairs(strings) do
-		if(str:sub(str:len()) ~= ",") then
-			str = str .. "."
-		end
+	local playersOnline = #onlineList
+	player:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, ("%d players online."):format(playersOnline))
 
-		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, str)
+	for i = 1, playersOnline, maxPlayersPerMessage do
+		local j = math.min(i + maxPlayersPerMessage - 1, playersOnline)
+		local msg = table.concat(onlineList, ", ", i, j) .. "."
+		player:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, msg)
 	end
-
-	return true
+	return false
 end

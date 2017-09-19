@@ -1,8 +1,5 @@
 <?xml version="1.0"?>
 <monsters>
-	<!-- test -->
-	<monster name="Test" file="test/test.xml"/>
-
 	<monster name="Amazon" file="amazon.xml"/>
 	<monster name="Ancient Scarab" file="ancient scarab.xml"/>
 	<monster name="Assassin" file="assassin.xml"/>
@@ -18,11 +15,14 @@
 	<monster name="Blue Djinn" file="blue djinn.xml"/>
 	<monster name="Bonebeast" file="bonebeast.xml"/>
 	<monster name="Bug" file="bug.xml"/>
-	<monster name="Butterfly" file="butterfly.xml"/>
-		<monster name="Butterfly Purple" file="butterfly purple.xml"/>
-		<monster name="Butterfly Yellow " file="butterfly yellow.xml"/>
-		<monster name="Butterfly Red" file="butterfly red.xml"/>
-		<monster name="Butterfly Blue" file="butterfly blue.xml"/>
+	
+	<!-- Butterfly -->
+	<monster name="Butterfly" file="butterfly/butterfly.xml"/>
+	<monster name="Butterfly Purple" file="butterfly/butterfly purple.xml"/>
+	<monster name="Butterfly Yellow " file="butterfly/butterfly yellow.xml"/>
+	<monster name="Butterfly Red" file="butterfly/butterfly red.xml"/>
+	<monster name="Butterfly Blue" file="butterfly/butterfly blue.xml"/>
+	
 	<monster name="Carniphila" file="carniphila.xml"/>
 	<monster name="Cave Rat" file="cave rat.xml"/>
 	<monster name="Centipede" file="centipede.xml"/>
@@ -37,12 +37,17 @@
 	<monster name="Demon Skeleton" file="demon skeleton.xml"/>
 	<monster name="Demon" file="demon.xml"/>
 	<monster name="Dog" file="dog.xml"/>
-	<monster name="Dragon Lord" file="dragon lord.xml"/>
-	<monster name="Dragon" file="dragon.xml"/>
-	<monster name="Dwarf Geomancer" file="dwarf geomancer.xml"/>
-	<monster name="Dwarf Guard" file="dwarf guard.xml"/>
-	<monster name="Dwarf Soldier" file="dwarf soldier.xml"/>
-	<monster name="Dwarf" file="dwarf.xml"/>
+	
+	<!--Dragons -->
+	<monster name="Dragon Lord" file="dragons/dragon lord.xml"/>
+	<monster name="Dragon" file="dragons/dragon.xml"/>
+	
+	<!-- Dwarf -->
+	<monster name="Dwarf Geomancer" file="dwarf/dwarf geomancer.xml"/>
+	<monster name="Dwarf Guard" file="dwarf/dwarf guard.xml"/>
+	<monster name="Dwarf Soldier" file="dwarf/dwarf soldier.xml"/>
+	<monster name="Dwarf" file="dwarf/dwarf.xml"/>
+	
 	<monster name="Dworc Fleshhunter" file="dworc fleshhunter.xml"/>
 	<monster name="Dworc Venomsniper" file="dworc venomsniper.xml"/>
 	<monster name="Dworc Voodoomaster" file="dworc voodoomaster.xml"/>
@@ -76,13 +81,17 @@
 	<monster name="Lizard Templar" file="lizard templar.xml"/>
 	<monster name="Marid" file="marid.xml"/>
 	<monster name="Merlkin" file="merlkin.xml"/>
-	<monster name="Minotaur Archer" file="minotaur archer.xml"/>
-	<monster name="Minotaur Guard" file="minotaur guard.xml"/>
-	<monster name="Minotaur Mage" file="minotaur mage.xml"/>
-	<monster name="Minotaur" file="minotaur.xml"/>
+	<!-- Minotaurs -->
+	<monster name="Minotaur Archer" file="minotaurs/minotaur archer.xml"/>
+	<monster name="Minotaur Guard" file="minotaurs/minotaur guard.xml"/>
+	<monster name="Minotaur Mage" file="minotaurs/minotaur mage.xml"/>
+	<monster name="Minotaur" file="minotaurs/minotaur.xml"/>
+	
 	<monster name="Monk" file="monk.xml"/>
 	<monster name="Mummy" file="mummy.xml"/>
 	<monster name="Necromancer" file="necromancer.xml"/>
+	
+	<!-- Orcs -->
 	<monster name="Orc Berserker" file="orc berserker.xml"/>
 	<monster name="Orc Leader" file="orc leader.xml"/>
 	<monster name="Orc Rider" file="orc rider.xml"/>
@@ -91,6 +100,7 @@
 	<monster name="Orc Warlord" file="orc warlord.xml"/>
 	<monster name="Orc Warrior" file="orc warrior.xml"/>
 	<monster name="Orc" file="orc.xml"/>
+	
 	<monster name="Panda" file="panda.xml"/>
 	<monster name="Parrot" file="parrot.xml"/>
 	<monster name="Pig" file="pig.xml"/>
@@ -131,7 +141,7 @@
 	<monster name="Wolf" file="wolf.xml"/>
 	<monster name="Yeti" file="yeti.xml"/>
 	
-<!-- bosses -->
+	<!-- bosses -->
 	<monster name="Ashmunrah" file="bosses/ashmunrah.xml"/>
 	<monster name="Deathslicer" file="bosses/deathslicer.xml"/>
 	<monster name="Demodras" file="bosses/demodras.xml"/>
@@ -157,5 +167,4 @@
 	<monster name="The Horned Fox" file="bosses/the horned fox.xml"/>
 	<monster name="The Old Widow" file="bosses/the old widow.xml"/>
 	<monster name="Vashresamun" file="bosses/vashresamun.xml"/>
-	
 </monsters>
